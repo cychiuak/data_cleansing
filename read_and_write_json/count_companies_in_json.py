@@ -1,8 +1,8 @@
 import os
 import json
 from collections import defaultdict
-from helper_function import write_data_to_file
-from helper_function.move_json_to_company_folder import move_json_to_company_folder
+from read_and_write_json import write_data_to_file
+from read_and_write_json.move_json_to_company_folder import move_json_to_company_folder
 
 def count_companies_in_json_files(initial_folder_number, end_folder_number, base_folder_path,destination_directory):
     company_count = defaultdict(int)
@@ -45,11 +45,14 @@ def count_companies_in_json_files(initial_folder_number, end_folder_number, base
                     # print("data_included is ",data_included)
                     # print("\n")
                     company_name = ''
+                    company_tag = ''
                     for j in range(len(data_included)):
                         try:
                             if data_included[j]['id'] == data_tag:
                                 company_name = data_included[j]['attributes']['company']
+                                company_tag = data_included[j]['attributes']['name']
                                 print("company is ",company_name)
+                                print("tag is ",company_tag)
                                 print("\n")
                               
                                 if company_name:
@@ -71,7 +74,7 @@ def count_companies_in_json_files(initial_folder_number, end_folder_number, base
                     print("file_path is ",file_path)
                     print("company_name is ",company_name)
                     print("filename is ",filename)
-                    move_json_to_company_folder(destination_directory, file_path, company_name,filename)
+                    move_json_to_company_folder(destination_directory, file_path, company_tag,filename, company_name)
                     
                   except Exception as e:
                       company_count['Error_any'] += 1
