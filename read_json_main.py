@@ -10,9 +10,9 @@ output_file_path = 'outputTesting.json'
 # Example usage
 folder_path = '../seeking_alpha_split_testing_copy'
 
-initial_folder_number = 4
-end_folder_number = 5
-destination_directory = '../seeking_alpha_split_testing_company_folder'
+initial_folder_number = 1
+end_folder_number = 4
+destination_directory = '../seeking_alpha_split_testing_company_folder2'
 company_counts = count_companies_in_json_files(initial_folder_number, end_folder_number,folder_path,destination_directory)
 # print(company_counts)
 write_counts_to_json(company_counts, output_file_path)

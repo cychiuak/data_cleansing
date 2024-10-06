@@ -1,7 +1,7 @@
 import os
 import json
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 from sort_date.get_publish_date import get_publish_date
 
 def sort_json_files_by_date(directory):
@@ -12,7 +12,10 @@ def sort_json_files_by_date(directory):
         full_path = os.path.join(directory, json_file)
         publish_date = get_publish_date(full_path)
         print("publish_date is ",publish_date)
-        if publish_date:
+        tzinfo = publish_date.tzinfo
+        print("tzinfo is",tzinfo)
+        publish_date = publish_date - timedelta(hours=9, minutes=30)
+        if publish_date and publish_date >= datetime(2020, 1, 1, tzinfo=tzinfo) and publish_date <= datetime.now(tzinfo):
             date_str = publish_date.strftime('%Y-%m-%d')
             print("date_str is ",date_str)
             files_with_dates.append((json_file, publish_date))
