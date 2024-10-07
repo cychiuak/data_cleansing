@@ -4,8 +4,10 @@ from collections import defaultdict
 from read_and_write_json import write_data_to_file
 from read_and_write_json.move_json_to_company_folder import move_json_to_company_folder
 from datetime import datetime, timedelta
+from read_and_write_json.load_and_move_and_extract_file import load_and_move_and_extract_file
+from read_and_write_json.clean_html import clean_html
 
-def count_companies_in_json_files(initial_folder_number, end_folder_number, base_folder_path,destination_directory):
+def count_companies_in_json_files(initial_folder_number, end_folder_number, base_folder_path,destination_directory,comments_directory):
     company_count = defaultdict(int)
     # i = 10
     number_of_empty_primary_ticker = 0
@@ -77,7 +79,7 @@ def count_companies_in_json_files(initial_folder_number, end_folder_number, base
                       publish_date = datetime.fromisoformat(publish_date)
                     else:
                       write_data_to_file.write_data_to_file("errorMessage.json", "publishDateNotFoundError" + file_path)
-                    print("publish_date is ",publish_date)
+                    # print("publish_date is ",publish_date)
                     tzinfo = publish_date.tzinfo
                     publish_date = publish_date - timedelta(hours=9, minutes=30)
                     date_str = ''
@@ -87,16 +89,17 @@ def count_companies_in_json_files(initial_folder_number, end_folder_number, base
                        write_data_to_file.write_data_to_file("too_long_ago.json", "publish_date: " + date_str + " file_path: " + file_path)
                        continue
                     article_content = {}
-                    article_content["title"] = data['data']['attributes']['title']
-                    article_content["summary"] = data['data']['attributes']['summary']
-                    article_content["content"] = data['data']['attributes']['content']
-                    print("data is ",article_content)
-                    print("destination_directory is ",destination_directory)
-                    print("file_path is ",file_path)
-                    print("company_name is ",company_name)
-                    print("filename is ",filename)
-
+                    article_content["title"] = clean_html(data['data']['attributes']['title'])
+                    article_content["summary"] = clean_html(data['data']['attributes']['summary'][0]) if len(data['data']['attributes']['summary']) > 0 else []
+                    article_content["content"] = clean_html(data['data']['attributes']['content'])
+                    # print("destination_directory is ",destination_directory)
+                    # print("file_path is ",file_path)
+                    # print("company_name is ",company_name)
+                    # print("filename is ",filename)
+                    comments_json_file_path = os.path.join(comments_directory,filename)
                     move_json_to_company_folder(destination_directory, file_path, company_tag,filename, company_name, date_str,article_content)
+                    company_folder = os.path.join(destination_directory, company_tag)
+                    load_and_move_and_extract_file(comments_json_file_path, company_folder, filename)
                     
                   except Exception as e:
                       company_count['Error_any'] += 1

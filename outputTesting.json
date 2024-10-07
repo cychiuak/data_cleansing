@@ -1,8 +1,9 @@
 {
+    "number_of_empty_primary_ticker": 8,
+    "Apple Inc.": 8,
+    "is_empty_primary_ticker": 8,
+    "Error_any": 5,
     "Applied Optoelectronics, Inc.": 2,
-    "number_of_empty_primary_ticker": 6,
-    "Apple Inc.": 6,
-    "is_empty_primary_ticker": 6,
     "Direxion Daily AAPL Bear 1X Shares ETF": 1,
-    "total_files": 9
+    "total_files": 13
 }
