@@ -15,8 +15,21 @@ from read_and_write_json.find_and_move_comments import find_and_move_file
 
 # Example usage
 
-filename = "example.txt"
-search_directory = '../comments2/extracted'
-target_directory = "/path/to/target_directory"
+# filename = "example.txt"
+# search_directory = '../comments2/extracted'
+# target_directory = "/path/to/target_directory"
 
-find_and_move_file(filename, search_directory, target_directory)
+# find_and_move_file(filename, search_directory, target_directory)
+import json
+
+data = {
+    "title": "Applied Optoelectronics Appears Undervalued",
+    "summary": [
+        "Amazon is their top customer.",
+        "They have a unique manufacturing process within the optics industry.",
+        "The strength of the US dollar has helped improve their margins."
+    ]
+}
+
+json_object = json.dumps(data, indent=4)
+print(json_object)

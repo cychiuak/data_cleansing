@@ -3,6 +3,7 @@ import json
 from collections import defaultdict
 from read_and_write_json import write_data_to_file
 from read_and_write_json.move_json_to_company_folder import move_json_to_company_folder
+from datetime import datetime, timedelta
 
 def count_companies_in_json_files(initial_folder_number, end_folder_number, base_folder_path,destination_directory):
     company_count = defaultdict(int)
@@ -70,11 +71,32 @@ def count_companies_in_json_files(initial_folder_number, end_folder_number, base
                       company_count['is_empty_primary_ticker'] += 1
                       is_empty_primary_ticker = False
                       write_data_to_file.write_data_to_file("no_primary_ticker.json", company_name)
+                    # we now have company_tag, the folderpath we want to move our files: destination_directory + company_tag
+                    publish_date = data.get("data", {}).get("attributes", {}).get("publishOn", None)
+                    if publish_date:
+                      publish_date = datetime.fromisoformat(publish_date)
+                    else:
+                      write_data_to_file.write_data_to_file("errorMessage.json", "publishDateNotFoundError" + file_path)
+                    print("publish_date is ",publish_date)
+                    tzinfo = publish_date.tzinfo
+                    publish_date = publish_date - timedelta(hours=9, minutes=30)
+                    date_str = ''
+                    if publish_date and publish_date >= datetime(2020, 1, 1, tzinfo=tzinfo) and publish_date <= datetime.now(tzinfo):
+                       date_str = publish_date.strftime('%Y-%m-%d')
+                    else:
+                       write_data_to_file.write_data_to_file("too_long_ago.json", "publish_date: " + date_str + " file_path: " + file_path)
+                       continue
+                    article_content = {}
+                    article_content["title"] = data['data']['attributes']['title']
+                    article_content["summary"] = data['data']['attributes']['summary']
+                    article_content["content"] = data['data']['attributes']['content']
+                    print("data is ",article_content)
                     print("destination_directory is ",destination_directory)
                     print("file_path is ",file_path)
                     print("company_name is ",company_name)
                     print("filename is ",filename)
-                    move_json_to_company_folder(destination_directory, file_path, company_tag,filename, company_name)
+
+                    move_json_to_company_folder(destination_directory, file_path, company_tag,filename, company_name, date_str,article_content)
                     
                   except Exception as e:
                       company_count['Error_any'] += 1
@@ -85,7 +107,7 @@ def count_companies_in_json_files(initial_folder_number, end_folder_number, base
                         print("data_error")
                         company_count['Empty_Data'] += 1
                       else:
-                        write_data_to_file.write_data_to_file("errorMessage.json", str(e) + file_path)
+                        write_data_to_file.write_data_to_file("errorMessage_2_version.json", str(e) + file_path)
           # print("i is ",i)
                       
           # if i > 15:
