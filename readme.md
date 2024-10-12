@@ -1,4 +1,1 @@
-The sequence to run the folder in order to get the data is as follows:
-read_json_main.py
-sort_date.py
-move_comments.py
+split the data into folders and run read_json_main.py to get the result. Remember to change the file destination at read_json_main.py. Please ignore the files in testing folderand trash folder. They are currently useless
